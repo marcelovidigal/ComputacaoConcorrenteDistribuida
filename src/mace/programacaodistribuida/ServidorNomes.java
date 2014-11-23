@@ -29,17 +29,17 @@ public class ServidorNomes {
 				int indice = tabela.buscar(stringTokenizer.nextToken());
 				
 				if (indice == -1) // nao localizado
-					saida.println(- 1 + " " + " host nao encontrado ");
+					saida.println("nome do host nao localizado");
 				else
-					saida.println(tabela.getPorta(indice) + " " + tabela.getNomeHost(indice));
+					saida.println(tabela.getNome(indice) + " " + tabela.getIp(indice) + " " + tabela.getPorta(indice));
 				
 			} else if (tag.equals("inserir")) {
 				
 				String nome = stringTokenizer.nextToken();
-				String nomeHost = stringTokenizer.nextToken();
+				String ip = stringTokenizer.nextToken();
 				int porta = Integer.parseInt(stringTokenizer.nextToken());
 				
-				int retorno = tabela.inserir(nome, nomeHost, porta);
+				int retorno = tabela.inserir(nome, ip, porta);
 				
 				saida.println(retorno);
 			}
@@ -56,7 +56,7 @@ public class ServidorNomes {
 		ServerSocket serverSocket = null;
 		ServidorNomes servidorNomes = new ServidorNomes();
 		
-		System.out.println("Servidor de nomes iniciado: ");
+		System.out.println("Servidor de nomes iniciado...");
 		
 		try {
 			

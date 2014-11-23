@@ -7,28 +7,33 @@ import mace.classesutilitarias.*;
 
 public class Topologia {
 	
-	public static void lerVizinhos(int myId, int N, IntLinkedList neighbors) {
+	public static void lerVizinhos(int id, int n, IntLinkedList vizinhos) {
 		
-		Util.println("Lendo topologia");
+		//Util.println("Lendo topologia...");
+		System.out.println("Lendo topologia...");
 		
 		try {
 			
-			BufferedReader dIn = new BufferedReader(new FileReader("topologia" + myId));
-			StringTokenizer st = new StringTokenizer(dIn.readLine());
+			BufferedReader bufferedReader = new BufferedReader(new FileReader("topologia" + id));
+			StringTokenizer stringTokenizer = new StringTokenizer(bufferedReader.readLine());
 			
-			while (st.hasMoreTokens()) {
-				int neighbor = Integer.parseInt(st.nextToken());
-				neighbors.add(neighbor);
+			while (stringTokenizer.hasMoreTokens()) {
+				int vizinho = Integer.parseInt(stringTokenizer.nextToken());
+				vizinhos.adicionar(vizinho);
 			}
+			
+			bufferedReader.close();
+			
 		} catch (FileNotFoundException e) {
-			for (int j = 0; j < N; j++)
-				if (j != myId)
-					neighbors.add(j);
+			for (int i = 0; i < n; i++)
+				if (i != id)
+					vizinhos.adicionar(i);
 		} catch (IOException e) {
 			System.err.println(e);
 		}
-	
-		Util.println(neighbors.toString());
+		
+		//Util.println(neighbors.toString());
+		System.out.println("[" + id + "]" + vizinhos.toString());
 	}
 	
 }

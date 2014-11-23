@@ -21,11 +21,11 @@ public class ClienteServidorNomes {
 		saida = new PrintStream(servidor.getOutputStream());
 	}
 	
-	public int inserirNome(String nome, String nomeHost, int numeroPorta) throws IOException {
+	public int inserirNome(String nome, String ip, int porta) throws IOException {
 		
 		getSocket();
 		
-		saida.println("inserir " + nome + " " + nomeHost + " " + numeroPorta);
+		saida.println("inserir " + nome + " " + ip + " " + porta);
 		saida.flush();
 		
 		return Integer.parseInt(entrada.readLine());
@@ -41,10 +41,23 @@ public class ClienteServidorNomes {
 		String resultado = entrada.readLine();
 		
 		StringTokenizer stringTokenizer = new StringTokenizer(resultado);
-		int numeroPorta = Integer.parseInt(stringTokenizer.nextToken());
-		String nomeHost = stringTokenizer.nextToken();
 		
-		return new Endereco(nomeHost, numeroPorta);
+		String ip = "-1";
+		int porta = -1;
+		
+		if (stringTokenizer.countTokens() == 3) {
+			nome = stringTokenizer.nextToken();
+			ip = stringTokenizer.nextToken();
+			porta = Integer.parseInt(stringTokenizer.nextToken());
+		} else {
+			
+			nome = "";
+			
+			while (stringTokenizer.hasMoreTokens())
+				nome += stringTokenizer.nextToken() + " "; 
+		}
+		
+		return new Endereco(nome.trim(), ip, porta);
 	}
 	
 	public static void main(String[] args) {
@@ -52,21 +65,21 @@ public class ClienteServidorNomes {
 		ClienteServidorNomes clienteServidorNomes = new ClienteServidorNomes();
 		
 		try {
-			clienteServidorNomes.inserirNome(" ola1 ", "localhost", 1000);
-			clienteServidorNomes.inserirNome(" ola2 ", "localhost", 1001);
-			clienteServidorNomes.inserirNome(" ola3 ", "localhost", 1002);
+			clienteServidorNomes.inserirNome("localhost1", "127.0.0.1", 1000);
+			clienteServidorNomes.inserirNome("localhost2", "0.0.0.0", 1001);
+			clienteServidorNomes.inserirNome("localhost3", "192.168.1.4", 1002);
 			
-			Endereco endereco = clienteServidorNomes.buscarNome(" ola1 ");
-			System.out.println(endereco.getNomeHost() + ":" + endereco.getPorta());
+			Endereco endereco = clienteServidorNomes.buscarNome("localhost1");
+			System.out.println(endereco.getNome() + ":" + endereco.getIp() + ":" + endereco.getPorta());
 			
-			endereco = clienteServidorNomes.buscarNome(" ola3 ");
-			System.out.println(endereco.getNomeHost() + ":" + endereco.getPorta());
+			endereco = clienteServidorNomes.buscarNome("localhot2");
+			System.out.println(endereco.getNome() + ":" + endereco.getIp() + ":" + endereco.getPorta());
 			
-			endereco = clienteServidorNomes.buscarNome(" ola4 ");
-			System.out.println(endereco.getNomeHost() + ":" + endereco.getPorta());
+			endereco = clienteServidorNomes.buscarNome("localhost3");
+			System.out.println(endereco.getNome() + ":" + endereco.getIp() + ":" + endereco.getPorta());
 			
 		} catch (Exception e) {
-			System.err.println("Servidor finalizado: " + e);
+			System.err.println("Servidor encerrado!" + e);
 		}
 	}
 	

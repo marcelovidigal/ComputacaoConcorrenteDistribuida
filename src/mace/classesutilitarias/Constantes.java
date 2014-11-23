@@ -6,7 +6,7 @@ public class Constantes {
 	
 	// internet related
 	public static final String NOME_SERVIDOR = "localhost";
-	public static final int PORTA_SERVIDOR = 7033;
+	public static final int PORTA_SERVIDOR = 15420;
 	public static final int coordinator = 0 ;
 	
 	// time bounds on messages for synchronous algorithms

@@ -7,61 +7,127 @@ import mace.classesutilitarias.*;
 
 public class Linker {
 	
-	PrintWriter[] dataOut;
-	BufferedReader[] dataIn;
-	BufferedReader dIn ;
-	int myId, N;
-	Conector conector;
+	BufferedReader[] entradas;
+	PrintWriter[] saidas;
 	
-	public IntLinkedList neighbors = new IntLinkedList();
+	BufferedReader entrada;
 	
-	public Linker(String basename, int id , int numProc) throws Exception {
-		myId = id ;
-		N = numProc;
-		dataIn = new BufferedReader[numProc];
-		dataOut = new PrintWriter[numProc];
-		Topologia.lerVizinhos(myId, N, neighbors);
-		conector = new Conector();
-		conector.Connect(basename, myId, numProc, dataIn, dataOut);
+	int id, n;
+	
+	Conexao conexao;
+	
+	public IntLinkedList vizinhos = new IntLinkedList();
+	
+	public Linker(String nome, int id , int totalConexoes) throws Exception {
+		
+		this.id = id;
+		this.n = totalConexoes;
+		
+		entradas = new BufferedReader[totalConexoes];
+		saidas = new PrintWriter[totalConexoes];
+		
+		Topologia.lerVizinhos(id, n, vizinhos);
+		
+		conexao = new Conexao();
+		conexao.conectar(nome, id, totalConexoes, entradas, saidas);
 	}
 	
-	public void sendMsg(int destId, String tag, String msg) {
-		dataOut[destId].println(myId + " " + destId + " " + tag + " " + msg + "#"); 
-		dataOut[destId].flush();
+	public void enviarMsg(int destino, String tag, String msg) {
+		saidas[destino].println(id + " " + destino + " " + tag + " " + msg + "#"); 
+		saidas[destino].flush();
 	}
 	
-	public void sendMsg(int destId, String tag) {
-		sendMsg(destId, tag, " 0 ");
+	public void enviarMsg(int destino, String tag) {
+		enviarMsg(destino, tag, " 0 ");
 	}
 	
-	public void multicast(IntLinkedList destIds, String tag, String msg) {
-		for (int i = 0; i < destIds.size(); i++) {
-			sendMsg(destIds.getEntry(i), tag, msg);
+	public void multicast(IntLinkedList destinos, String tag, String msg) {
+		for (int i = 0; i < destinos.size(); i++) {
+			enviarMsg(destinos.getItem(i), tag, msg);
 		}
 	}
 	
-	public Msg receiveMsg(int fromId) throws IOException {
-		String getline = dataIn[fromId].readLine();
-		Util.println(" received message " + getline);
-		StringTokenizer st = new StringTokenizer(getline);
-		int srcId = Integer.parseInt(st.nextToken());
-		int destId = Integer.parseInt(st.nextToken());
-		String tag = st.nextToken();
-		String msg = st.nextToken("#");
+	public Msg receberMsg(int origem) throws IOException {
 		
-		return new Msg(srcId, destId, tag, msg);
+		String linha = entradas[origem].readLine();
+		
+		//Util.println(" mensagem recebida " + linha);
+		System.out.println(" mensagem recebida " + linha);
+		
+		StringTokenizer stringTokenizer = new StringTokenizer(linha);
+		origem = Integer.parseInt(stringTokenizer.nextToken());
+		int destino = Integer.parseInt(stringTokenizer.nextToken());
+		String tag = stringTokenizer.nextToken();
+		String msg = stringTokenizer.nextToken("#");
+		
+		return new Msg(origem, destino, tag, msg);
 	}
 	
-	public int getMyId() { 
-		return myId;
+	public int getId() { 
+		return id;
 	}
 	
-	public int getNumProc() { 
-		return N;
+	public int getTotalConexoes() { 
+		return n;
 	}
 	
-	public void close() { 
-		conector.closeSockets();
+	public void fechar() { 
+		conexao.fecharSockets();
+	}
+	
+	public static void main(String[] args) {
+		try {
+			//int id = Integer.parseInt(args[0]);
+			//int totalConexoes = Integer.parseInt(args[1]);
+			
+			int totalConexoes = Integer.parseInt(args[0]);
+			
+			//Linker linker = new Linker("localhost", id, totalConexoes);
+			
+			for (int i = 0; i < totalConexoes; i++) {
+				
+				final int id = i;
+				
+				new Thread(new Runnable() {
+					public void run() {
+						
+						try {
+							
+							Linker linker = new Linker("localhost", id, totalConexoes);
+							
+							while (true) {
+								
+								for (int i = 0; i < totalConexoes; i++)
+									if (i != id) {
+										linker.enviarMsg(i, "msg", "msg de " + id + " para " + i);
+										System.out.println(linker.receberMsg(i));
+									}
+								
+								Thread.sleep(1000);
+							}
+							
+						} catch (Exception e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}).start();
+			}
+			
+			/*
+			for (int i = 0; i < totalConexoes; i++)
+				if (i != id)
+					linker.enviarMsg(i, "msg", "msg de " + id + " para " + i);
+			
+			for (int i = 0; i < totalConexoes; i++)
+				if (i != id)
+					System.out.println(linker.receberMsg(i));
+			*/
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 }

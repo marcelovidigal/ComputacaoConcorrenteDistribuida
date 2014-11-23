@@ -2,20 +2,26 @@ package mace.classesutilitarias;
 
 public class Endereco {
 	
-	String nomeHost;
-	int numeroPorta;
+	String nome;
+	String ip;
+	int porta;
 	
-	public Endereco(String s, int i) {
-		nomeHost = new String(s);
-		numeroPorta = i;
+	public Endereco(String nome, String ip, int porta) {
+		this.nome = new String(nome);
+		this.ip = new String(ip);
+		this.porta = porta;
 	}
 	
-	public String getNomeHost() {
-		return nomeHost;
+	public String getNome() {
+		return nome;
+	}
+	
+	public String getIp() {
+		return ip;
 	}
 	
 	public int getPorta() {
-		return numeroPorta;
+		return porta;
 	}
 	
 }

@@ -4,52 +4,55 @@ import java.util.*;
 
 public class Msg {
 	
-	int srcId, destId;
+	int origem, destino;
 	String tag;
-	String msgBuf;
+	String buffer;
 	
-	public Msg(int s, int t, String msgType, String buf) {
-		this.srcId = s;
-		destId = t ;
-		tag = msgType;
-		msgBuf = buf;
+	public Msg(int origem, int destino, String tag, String buffer) {
+		this.origem = origem;
+		this.destino = destino;
+		this.tag = tag;
+		this.buffer = buffer;
 	}
 	
-	public int getSrcId() {
-		return srcId;
+	public int getOrigem() {
+		return origem;
 	}
 	
-	public int getDestId() {
-		return destId;
+	public int getDestino() {
+		return destino;
 	}
 	
 	public String getTag() {
 		return tag;
 	}
 	
-	public String getMessage() {
-		return msgBuf;
+	public String getBuffer() {
+		return buffer;
 	}
 	
-	public int getMessageInt() {
+	public int getMsgInt() {
 		
-		StringTokenizer st = new StringTokenizer(msgBuf);
+		StringTokenizer stringTokenizer = new StringTokenizer(buffer);
 		
-		return Integer.parseInt(st.nextToken());
+		return Integer.parseInt(stringTokenizer.nextToken());
 	}
 	
-	public static Msg parseMsg(StringTokenizer st) {
-		int srcId = Integer.parseInt(st.nextToken());
-		int destId = Integer.parseInt(st.nextToken());
-		String tag = st.nextToken();
-		String buf = st.nextToken("#") ;
+	public static Msg parseMsg(StringTokenizer stringTokenizer) {
+		int origem = Integer.parseInt(stringTokenizer.nextToken());
+		int destino = Integer.parseInt(stringTokenizer.nextToken());
+		String tag = stringTokenizer.nextToken();
+		String buffer = stringTokenizer.nextToken("#") ;
 		
-		return new Msg(srcId, destId, tag, buf);
+		return new Msg(origem, destino, tag, buffer);
 	}
 	
 	public String toString() {
 		
-		String s = String.valueOf(srcId) + " " + String.valueOf(destId ) + " " + tag + " " + msgBuf + "#";
+		String s =	String.valueOf(origem) + " " + 
+					String.valueOf(destino) + " " + 
+					tag + " " + 
+					buffer + "#";
 		
 		return s;
 	}

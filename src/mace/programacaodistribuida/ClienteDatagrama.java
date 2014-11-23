@@ -14,8 +14,10 @@ public class ClienteDatagrama {
 	public static void main(String[] args) {
 		
 		String hostname;
+		
 		int porta = 2018;
 		int tamanho = 1024;
+		
 		DatagramSocket datagramSocket = null;
 		DatagramPacket datagramaEnvio, datagramaRecepcao;
 		
